@@ -21,6 +21,13 @@ exports.addTweets = async (mytweets) => {
     });
 }
 
+exports.getLatestTweet = async(author_id) => {
+    var latestTweet = await tweets.findOne({author_id: author_id},'id',{sort:{id:-1}});
+    if (latestTweet?.id)
+        return latestTweet.id;
+    else return 0;
+}
+
  exports.getTweets =  (req, res) => {
     tweets.find({}, (err, tweet) => {
         if (err) {
@@ -45,13 +52,14 @@ exports.getTweetWithID = (req, res) => {
 exports.updateTweet = (req, res) => {
     // var updatedTweet={id:req.params.tweetID,text:req.body.text,author_id:res.twitterUserId};
     // console.log(JSON.stringify(updatedTweet));
-    console.log(`id: ${req.params.tweetID}, text: ${JSON.stringify(req.body)},author_id:${res.twitterUserId}`);
-    tweets.findOneAndUpdate({ id: req.params.tweetID}, req.body, { new: true, useFindAndModify: false }, (err, tweet) => {
+    if (tweetModel.validateTweet( req.body)=='OK'){
+        tweets.findOneAndUpdate({ id: req.params.tweetID}, req.body, { new: true, useFindAndModify: false }, (err, tweet) => {
         if (err) {
             res.send(err);
         }
         res.json(tweet);
-    });
+        });
+    } else res.send(tweetModel.validateTweet( req.body));
 }
 
 exports.deleteTweet = (req, res) => {

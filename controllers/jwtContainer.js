@@ -10,12 +10,7 @@ exports.generateAccessToken =(userId)=> {
     return jwt.sign(userId, process.env.JWTSECRET);
 }
 
-   const getUserId = (token) => {
-    if (token =='test') {
-        var x= BigInt(714509613236883456);
-        return x.toString();
-    }
-        
+   const getUserId = (token) => {     
     index=container.findIndex(item=>item.token==token);
     if (index !=-1){
         if (container[index].userId !==undefined)
@@ -27,7 +22,6 @@ exports.generateAccessToken =(userId)=> {
 exports.authenticate = (req,res,next)=>{
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1];
-    console.log(`req: ${req} ,res: ${res}`);
     var userId=getUserId(token);
     res.twitterUserId=userId;
     if (userId ==='-1')

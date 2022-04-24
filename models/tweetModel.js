@@ -15,10 +15,17 @@ const Schema = mongoose.Schema;
         required: 'The unique identifier of the User who posted this Tweet.'
     },
 });
-// exports.joiTweetSchema = Joi.object({
-//     id: Joi.string(),
-//     text:Joi.string(),
-//     author_id:Joi.string()
-// });
+const Joi = require('joi');
+const joiTweetSchema = Joi.object({
+    text:Joi.string().required(),
+});
+
+exports.validateTweet =(req) => {
+   console.log(JSON.stringify(joiObj));
+   if (joiObj.error)
+        return joiObj.error
+    else return 'OK';
+       
+}
 
 

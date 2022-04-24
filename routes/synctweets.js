@@ -8,10 +8,14 @@ router.get('/'
 ,function(req, res, next) {tokenContainer.authenticate(req, res, next);}
 , async function(req, res, next) {
     var tweets =await tweetApi.getTweets(res.twitterUserId);
+    var latestTweetId = await tweetController.getLatestTweet( res.twitterUserId);
     if (tweets && tweets.length>0){
+       tweets = tweets.filter(tweet=>tweet.id>latestTweetId);
+    if (tweets.length>0){
        tweets=  tweets.map(tweet => ({ ...tweet, author_id: res.twitterUserId }))
+       await tweetController.addTweets(tweets);
+      }
     }
-    await tweetController.addTweets(tweets);
     res.send('sync successful!');
   });
 
